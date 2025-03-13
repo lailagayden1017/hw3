@@ -61,6 +61,13 @@ public:
 
 private:
   /// Add whatever helper functions and data members you need below
+	std::vector<T> data_;
+	int n; 
+	PComparator compare;
+
+	void trickleUp(int i);
+	void trickleDown(int i);
+
 
 
 
@@ -68,6 +75,20 @@ private:
 };
 
 // Add implementation of member functions here
+template <typename T, typename PComparator>
+Heap<T, PComparator>::Heap(int m, PComparator c) : n(m), compare(c){}
+
+template <typename T, typename PComparator>
+Heap<T, PComparator>::~Heap(){}
+
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::push(const T& item){
+	data_.push_back(item);
+	//trickle up
+	trickleUp(data_.size()-1);
+}
+
 
 
 // We will start top() for you to handle the case of 
@@ -81,12 +102,13 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
+		throw std::underflow_error("Empty Heap");
 
 
   }
+	return data_.front();
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
 
 
 }
@@ -95,19 +117,67 @@ T const & Heap<T,PComparator>::top() const
 // We will start pop() for you to handle the case of 
 // calling top on an empty heap
 template <typename T, typename PComparator>
-void Heap<T,PComparator>::pop()
+void Heap<T, PComparator>::pop()
 {
   if(empty()){
     // ================================
     // throw the appropriate exception
     // ================================
-
-
+		throw std::underflow_error("Empty Heap");
   }
-
-
-
+	std::swap(data_.front(), data_.back());
+	data_.pop_back();
+	if(!empty()){
+		//trickle down 
+		trickleDown(0);
+	}
 }
+
+template <typename T, typename PComparator> 
+bool Heap<T, PComparator>::empty() const{
+	return data_.empty();
+}
+
+template <typename T, typename PComparator> 
+size_t Heap<T,PComparator>::size() const{
+	return data_.size();
+}
+
+template <typename T, typename PComparator> 
+void Heap<T, PComparator>::trickleUp(int i){
+	while( i > 0){
+		int p = (i-1)/ n;
+		if(compare(data_[i], data_[p])){
+			std::swap(data_[i], data_[p]);
+			i = p;
+		}
+		else{
+			break;
+		}
+	}
+}
+
+template <typename T, typename PComparator> 
+void Heap<T, PComparator>::trickleDown(int i){
+	while(true){
+		int top = i;
+		for(int j = 0; j < n; ++j){
+			int child = n * i + j + 1;
+			if(child <(int)data_.size() && compare(data_[child], data_[top])){
+				top = child;
+			}
+		}
+		if(top == i){
+			break;
+		}
+		std::swap(data_[i], data_[top]);
+		i = top;
+} 
+}
+
+
+
+
 
 
 
