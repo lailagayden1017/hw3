@@ -9,8 +9,8 @@ template <typename T>
 class Stack : private std::vector<T>
 {
 public:
-    Stack();
-    ~Stack();
+    Stack() = default; //intialize the vector in constructor
+    ~Stack() = default;  //not sure what to do here figure out 
     bool empty() const{
         return std::vector<T>::empty();
     }
@@ -24,7 +24,7 @@ public:
         if(empty()){
             throw std::underflow_error("Empty Stack");
         }
-       std::vector<T>::pop_back()
+       std::vector<T>::pop_back();
 
     }  // throws std::underflow_error if empty
     const T& top() const{
